@@ -42,8 +42,9 @@ const LoginForm = ({ navigation }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { authState, login } = useAuth();
 
+  console.log("authState dans loginform", authState);
   const {
     register,
     setValue,
@@ -54,9 +55,8 @@ const LoginForm = ({ navigation }) => {
   } = useForm({
     resolver: yupResolver(validation),
     defaultValues: {
-      email: "",
+      email: authState.email || "",
       password: "",
-      remember: false,
     },
   });
 
@@ -170,8 +170,9 @@ const LoginForm = ({ navigation }) => {
         name="remember"
         control={control}
         rules={{ required: false }}
-        render={({ field: { onChange } }) => (
+        render={({ field: { onChange, value } }) => (
           <BouncyCheckbox
+            isChecked={authState.checkStatus}
             fillColor="green"
             unfillColor="white"
             text="Se souvenir de moi"

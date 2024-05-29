@@ -5,12 +5,14 @@ import {
   clearUserEmail,
   getCheckStatus,
   getUserEmail,
-  getUserToken,
   storeCheckStatus,
   storeUserEmail,
-  storeUserToken,
 } from "../service/storeAndGetRememberMe";
-import tokenStorage from "../service/tokenStorage";
+import {
+  clearUserSession,
+  retrieveUserSession,
+  storeUserSession,
+} from "../service/tokenStorage";
 
 const API_URL = "http://192.168.1.101:3000/v1/login";
 const AuthContext = createContext();
@@ -19,6 +21,8 @@ export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     token: null,
     isLoading: true,
+    email: "",
+    checkStatus: false,
   });
 
   const navigation = useNavigation();
@@ -30,20 +34,34 @@ export const AuthProvider = ({ children }) => {
    */
   const loadRememberMe = async () => {
     try {
+      const { token } = await retrieveUserSession();
       const { emailValue } = await getUserEmail();
       const { checkValue } = await getCheckStatus();
-      const { token } = await getUserToken();
-
+      setAuthState({
+        token,
+        isLoading: false,
+        email: emailValue,
+        checkStatus: checkValue,
+      });
+      console.log("authState dans authContex.js", { authState });
       if (token) {
-        tokenStorage.storeUserSession(token);
-        setAuthState({ token, isLoading: false });
         navigation.navigate("Discoveries");
       } else {
-        setAuthState({ token: null, isLoading: false });
+        setAuthState({
+          token: null,
+          isLoading: false,
+          email: "",
+          checkStatus: false,
+        });
       }
     } catch (error) {
       console.error("Error loading remember me data:", error);
-      setAuthState({ token: null, isLoading: false });
+      setAuthState({
+        token: null,
+        isLoading: false,
+        email: "",
+        checkStatus: false,
+      });
     }
   };
 
@@ -55,16 +73,22 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(API_URL, data);
       const token = response.data.token;
-      tokenStorage.storeUserSession(token);
-      setAuthState({ token, isLoading: false });
+
       if (data.remember) {
         await storeUserEmail(data.email);
         await storeCheckStatus(data.remember);
-        await storeUserToken(token);
       } else {
         await clearUserEmail();
         await storeCheckStatus(false);
       }
+      await storeUserSession(token);
+      setAuthState({
+        token,
+        isLoading: false,
+        email: data.email,
+        checkStatus: data.remember,
+      });
+
       navigation.reset({
         index: 0,
         routes: [{ name: "Discoveries" }],
@@ -75,9 +99,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await tokenStorage.clearUserSession();
-    setAuthState({ token: null, isLoading: false });
-    navigation.navigate("Home");
+    try {
+      await clearUserSession();
+      setAuthState({
+        ...authState,
+        token: null,
+        isLoading: false,
+      });
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
 
   return (

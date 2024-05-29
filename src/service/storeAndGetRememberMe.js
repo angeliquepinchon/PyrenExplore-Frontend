@@ -14,7 +14,7 @@ const getUserEmail = async () => {
     return emailValue !== null ? { emailValue } : { emailValue: "" };
   } catch (error) {
     console.error("Error getting stored email fo rmemerme:", error);
-    return null;
+    return { emailValue: "" };
   }
 };
 
@@ -40,24 +40,7 @@ const getCheckStatus = async () => {
     return checkValue !== null ? { checkValue } : { checkValue: false };
   } catch (error) {
     console.error("Error getting check value for remember me:", error);
-    return null;
-  }
-};
-
-const storeUserToken = async (token) => {
-  try {
-    await AsyncStorage.setItem("userToken", token);
-  } catch (error) {
-    console.error("Error storing user token for remember me:", error);
-  }
-};
-
-const getUserToken = async () => {
-  try {
-    const token = await AsyncStorage.getItem("userToken");
-    return token !== null ? { token } : { token: "" };
-  } catch (error) {
-    console.error("Error getting user token for remember me:", error);
+    return { checkValue: false };
   }
 };
 
@@ -65,8 +48,6 @@ export {
   clearUserEmail,
   getCheckStatus,
   getUserEmail,
-  getUserToken,
   storeCheckStatus,
   storeUserEmail,
-  storeUserToken,
 };

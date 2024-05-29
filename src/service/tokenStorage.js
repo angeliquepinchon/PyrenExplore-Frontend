@@ -42,6 +42,7 @@ const checkTokenExpiration = (decodedToken) => {
 const storeUserSession = async (token) => {
   try {
     await SecureStore.setItemAsync("user_session", JSON.stringify({ token }));
+
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   } catch (error) {
     throw new Error(`Failed to store user session: ${error.message}`);
@@ -89,4 +90,4 @@ const clearUserSession = async () => {
   }
 };
 
-export default { clearUserSession, retrieveUserSession, storeUserSession };
+export { clearUserSession, retrieveUserSession, storeUserSession };
