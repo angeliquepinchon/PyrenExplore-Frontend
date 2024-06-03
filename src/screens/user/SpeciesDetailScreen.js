@@ -1,114 +1,101 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 import { StyleSheet, Text, View } from "react-native";
+
 import DetailCard from "../../components/DetailCard";
 import colors from "../../utilites/colors";
 
 const SpeciesDetailScreen = () => {
+  const route = useRoute();
+  const { species } = route.params;
+
   return (
-    <DetailCard title={"fiche détaillée"}>
-      <View>
-        <View>
+    <DetailCard title={"fiche détaillée"} image={species.photo}>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{species.name}</Text>
           <Text style={styles.label}>Nom scientifique</Text>
-          <Text>ecureil</Text>
+          <Text>{species.scientificName}</Text>
         </View>
-        <View>
-          <View>
-            <Text style={styles.label}>Categorie</Text>
-            <Text>animale</Text>
-          </View>
-          <View>
-            <Text style={styles.label}>type</Text>
-            <Text>mammifère</Text>
-          </View>
+        <View style={styles.section}>
+          <Text style={styles.label}>Categorie</Text>
+          <Text>{species.category}</Text>
         </View>
-        <View>
+        <View style={styles.section}>
+          <Text style={styles.label}>type</Text>
+          <Text>{species.type}</Text>
+        </View>
+        <View style={styles.section}>
           <Text style={styles.label}>Ou le trouver</Text>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum
-            quos, eligendi officiis odio quae tenetur consectetur alias, magni
-            dolores dolore excepturi delectus non ipsam reprehenderit earum?
-            Sapiente libero optio quas. Facere quos cupiditate voluptatem magni
-            reiciendis veniam ab esse vel quo! Fuga possimus commodi pariatur,
-            quaerat suscipit dolor rerum omnis molestias voluptatum provident
-            magni reprehenderit est praesentium et sit debitis.
-          </Text>
+          <Text>{species.findIt}</Text>
         </View>
-        <View>
+        <View style={styles.section}>
           <Text style={styles.label}>Habitat</Text>
-          <Text>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos
-            laudantium dignissimos architecto illum nesciunt harum quod hic ad
-            dicta ea. Porro harum doloremque optio delectus ipsum esse, autem
-            ipsa accusantium.
-          </Text>
+          <Text>{species.habitat}</Text>
         </View>
-        <View>
+        <View style={styles.section}>
           <Text style={styles.label}>Description</Text>
-          <Text>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi eos,
-            eveniet nihil quasi fuga, et dolorum doloribus autem, explicabo
-            magnam at rerum sed porro mollitia repellat voluptas aut eligendi
-            eius. Corporis explicabo non voluptatibus laboriosam voluptates
-            accusamus dolorum quia tempore dignissimos omnis voluptatum
-            temporibus odit cumque voluptas, perspiciatis quas fugiat similique
-            libero repellendus! Amet quisquam, error suscipit nihil perspiciatis
-            totam.
-          </Text>
+          <Text>{species.description}</Text>
         </View>
-        <View>
-          <Text style={styles.label}>Comportement</Text>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
-            esse dicta ullam nemo iure. Et, nihil? Illo, eos voluptas neque a
-            et, hic eaque aspernatur fugit nobis sunt voluptate maiores?
-          </Text>
-        </View>
-        <View>
+        {species.category === "animale" ? (
+          <View style={styles.section}>
+            <Text style={styles.label}>Comportement</Text>
+            <Text>{species.behavior}</Text>
+          </View>
+        ) : null}
+        <View style={styles.section}>
           <Text style={styles.label}>Cycle de vie</Text>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illo
-            dolorem temporibus sunt earum repudiandae! Autem dolor tempora
-            corporis aliquam recusandae praesentium. Porro accusantium ab culpa
-            reiciendis commodi tenetur deleniti officiis.
-          </Text>
+          <Text>{species.lifeCycle}</Text>
         </View>
-        <View>
-          <Text style={styles.label}>type</Text>
-          <Text>mammifère</Text>
-        </View>
-        <View>
-          <Text style={styles.label}>Régime alimentaire</Text>
-          <Text>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis
-            delectus debitis blanditiis rem veritatis sequi explicabo impedit
-            qui alias, nihil asperiores maxime. Laudantium repudiandae ipsum
-            animi in qui recusandae natus!
-          </Text>
-        </View>
-        <View>
-          <Text style={styles.label}>type</Text>
-          <Text>mammifère</Text>
-        </View>
-        <View>
+        {species.category === "animale" ? (
+          <View style={styles.section}>
+            <Text style={styles.label}>Régime alimentaire</Text>
+            <Text>{species.diet}</Text>
+          </View>
+        ) : null}
+        <View style={styles.section}>
           <Text style={styles.label}>Statut</Text>
-          <Text>En danger</Text>
+          <Text>{species.status ? species.status : "inconnu"}</Text>
         </View>
-        <View>
-          <Text style={styles.label}>Informarion complémentaires</Text>
-          <Text>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</Text>
+        <View style={styles.section}>
+          <Text style={styles.label}>Informarions complémentaires</Text>
+          <Text>{species.addInformation}</Text>
         </View>
+      </View>
+      <View
+        style={[styles.section, { alignItems: "center", marginBottom: 10 }]}
+      >
+        <MaterialCommunityIcons
+          name="cards-diamond"
+          size={24}
+          color={colors.GREEN}
+        />
       </View>
     </DetailCard>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    marginTop: 70,
+  },
+  titleContainer: {
+    alignSelf: "center",
+    alignItems: "center",
+  },
+  title: {
+    color: colors.GREEN,
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  section: {
+    marginTop: 20,
   },
   label: {
     color: colors.DARKGREY,
     textTransform: "uppercase",
     fontWeight: "bold",
-    marginTop: 20,
   },
 });
 
