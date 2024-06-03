@@ -44,7 +44,6 @@ const LoginForm = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const { authState, login } = useAuth();
 
-  console.log("authState dans loginform", authState);
   const {
     register,
     setValue,

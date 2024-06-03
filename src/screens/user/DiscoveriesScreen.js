@@ -1,6 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import Filter from "../../components/Filter";
 import PhotoModal from "../../components/PhotoModal";
@@ -8,6 +15,7 @@ import SearchBar from "../../components/SearchBar";
 import WithBackgroundImage from "../../components/WithBackgroundImage";
 import ActionButton from "../../components/buttons/ActionButton";
 import ResetButton from "../../components/buttons/ResetButton";
+import { useAuth } from "../../context/authContext";
 import colors from "../../utilites/colors";
 import speciesTypes from "../../utilites/speciesTypes";
 
@@ -16,10 +24,11 @@ const API_URL = "http://192.168.1.101:3000/v1/species";
 const DiscoveriesScreen = ({ navigation }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [species, setSpecies] = useState(null);
-  const [originalSpecies, setOriginalSpecies] = useState(null);
+  const [originalSpecies, setOriginalSpecies] = useState(null); // for handle the reset
   const [inputValue, setInputValue] = useState("renard");
   const [errorMessage, setErrorMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const { authState, login } = useAuth();
 
   useEffect(() => {
     const fetchSpeciesData = async () => {
@@ -109,15 +118,17 @@ const DiscoveriesScreen = ({ navigation }) => {
     <WithBackgroundImage>
       <View style={styles.container}>
         <View>
-          <Text style={styles.title}>Découvrire la biodiversité</Text>
+          <Text style={styles.title}>Découvrir la biodiversité</Text>
         </View>
         <SearchBar
           value={inputValue}
           onChangeText={onChangeText}
           validate={handleSearchBar}
         />
-        <View>
-          <Text id="errorMessage">{errorMessage}</Text>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorMessage} id="errorMessage">
+            {errorMessage}
+          </Text>
         </View>
       </View>
       <View style={styles.imagesContainer}>
@@ -136,29 +147,33 @@ const DiscoveriesScreen = ({ navigation }) => {
           />
         </View>
         <View style={{ flex: 1 }}>
-          <View style={styles.imagesContent}>
-            {species &&
-              species.map((element) => {
-                return (
-                  <TouchableOpacity
-                    key={element.id}
-                    onPress={() =>
-                      navigation.navigate("Detail", { species: element })
-                    }
-                  >
-                    <Image
-                      style={styles.tinyImage}
-                      source={{
-                        uri: element.photo,
-                      }}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
-          </View>
-          <View style={styles.actionButton}>
-            <ActionButton title="Faire ma découverte" openModal={openModal} />
-          </View>
+          <ScrollView>
+            <View style={styles.imagesContent}>
+              {species &&
+                species.map((element) => {
+                  return (
+                    <TouchableOpacity
+                      key={element.id}
+                      onPress={() =>
+                        navigation.navigate("Detail", { species: element })
+                      }
+                    >
+                      <Image
+                        style={styles.tinyImage}
+                        source={{
+                          uri: element.photo,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  );
+                })}
+            </View>
+          </ScrollView>
+          {authState.token ? (
+            <View style={styles.actionButton}>
+              <ActionButton title="Faire ma découverte" openModal={openModal} />
+            </View>
+          ) : null}
         </View>
       </View>
       <PhotoModal visible={modalVisible} onClose={closeModal} />
@@ -177,6 +192,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 80,
     marginBottom: 50,
+  },
+  errorContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  errorMessage: {
+    color: colors.ERROR,
   },
   imagesContainer: {
     flex: 1,
@@ -207,6 +229,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "flex-end",
     justifyContent: "flex-end",
+    marginTop: 25,
   },
 });
 

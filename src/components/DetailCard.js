@@ -5,19 +5,19 @@ import colors from "../utilites/colors";
 import WithBackGroundImage from "./WithBackgroundImage";
 import GoBackButton from "./buttons/GoBackButton";
 
-const DetailCard = ({ children, title }) => {
+const DetailCard = ({ children, title, image }) => {
   const navigation = useNavigation();
   return (
     <WithBackGroundImage>
-      <GoBackButton onPress={() => navigation.navigate("Discoveries")} />
-      <View style={{ alignItems: "center" }}>
+      <View style={styles.mainContainer}>
+        <GoBackButton onPress={() => navigation.navigate("Discoveries")} />
         <Text style={styles.title}>{title}</Text>
         <View style={styles.container}>
           <View style={styles.imageContainer}>
             <Image
               style={styles.image}
               source={{
-                uri: "https://images.pexels.com/photos/47547/squirrel-animal-cute-rodents-47547.jpeg",
+                uri: image,
               }}
             />
           </View>
@@ -28,6 +28,11 @@ const DetailCard = ({ children, title }) => {
   );
 };
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    alignItems: "center",
+    paddingTop: 20,
+  },
   title: {
     textTransform: "uppercase",
     fontWeight: "bold",
@@ -53,10 +58,9 @@ const styles = StyleSheet.create({
     position: "relative",
     borderTopRightRadius: 57,
     borderTopLeftRadius: 57,
-    padding: 40,
-    paddingTop: 70,
     backgroundColor: colors.RGBA,
     marginTop: 50,
+    paddingHorizontal: 40,
   },
 });
 

@@ -9,7 +9,7 @@ const speciesTypes = [
   },
   {
     id: "3",
-    type: "INSECT",
+    type: "INSECTE",
   },
   {
     id: "4",
@@ -37,14 +37,10 @@ const speciesTypes = [
   },
   {
     id: "10",
-    type: "PLANTE",
-  },
-  {
-    id: "11",
     type: "FLEUR",
   },
   {
-    id: "12",
+    id: "11",
     type: "ARBRE",
   },
 ];
