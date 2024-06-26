@@ -20,11 +20,9 @@ const WithBackgroundImage = ({ children }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
   },
   image: {
     flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
     width: "100%",
     height: "100%",

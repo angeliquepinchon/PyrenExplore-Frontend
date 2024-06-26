@@ -1,15 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import * as yup from "yup";
 
 import { useAuth } from "../../context/authContext";
@@ -20,10 +12,6 @@ import PurpleButton from "../buttons/PurpleButton";
 
 const validation = yup
   .object({
-    email: yup
-      .string()
-      .required("Le champ identifiant est requis")
-      .email("L'identifiant doit être un email valide"),
     password: yup
       .string()
       .required("Le mot de passe est requis")
@@ -35,13 +23,18 @@ const validation = yup
         /[^\w]/,
         "Le mot de passe doit contenir au moins un caractère spécial"
       ),
+    passwordConfirmation: yup
+      .string()
+      .oneOf(
+        [yup.ref("password"), null],
+        'Ce champ doit correspondre au champ "mot de passe"'
+      ),
   })
   .required();
 
-const LoginForm = ({ navigation }) => {
+const UpdatePasswordForm = ({ navigation }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const { authState, login } = useAuth();
 
   const {
@@ -54,20 +47,15 @@ const LoginForm = ({ navigation }) => {
   } = useForm({
     resolver: yupResolver(validation),
     defaultValues: {
-      email: authState.email || "",
       password: "",
     },
   });
 
   const onSubmit = async (data) => {
     try {
-      setLoading(true);
-      await login(data);
-      reset();
+      console.log("ok update password");
     } catch (error) {
       handleServerError(error, setIsVisible, setErrorMessage);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -75,73 +63,24 @@ const LoginForm = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text
-          accessibilityLabel="Titre de la page: Connexion"
+          accessibilityLabel="Titre de la page: Nouveau mot de passe"
           style={styles.title}
         >
-          Connexion
+          Nouveau mot de passe
         </Text>
       </View>
-
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <View>
-            <Text accessibilityLabel="Champ: Identifiant" style={styles.label}>
-              Identifiant *
+            <Text
+              accessibilityLabel="Champ: Nouveau mot de passe"
+              style={styles.label}
+            >
+              Nouveau mot de passe *
             </Text>
             <TextInput
-              aria-label="identifiant"
-              placeholder="paloma@gmail.com"
-              style={[
-                styles.input,
-                { borderColor: errors.email ? Colors.ERROR : "white" },
-              ]}
-              onBlur={onBlur}
-              onChangeText={(value) => onChange(value)}
-              value={value}
-              accessibilityLabel="entrez votre addresse email"
-            />
-            {errors.email ? (
-              <Text
-                accessibilityLabel="message d'erreur pour l'adresse email"
-                style={styles.error}
-              >
-                {errors.email.message}
-              </Text>
-            ) : null}
-          </View>
-        )}
-        name="email"
-        rules={{ required: true }}
-      />
-
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "flex-end",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text
-                accessibilityLabel="Champ: Mot de passe"
-                style={styles.label}
-              >
-                Mot de passe *
-              </Text>
-              <Pressable
-                onPress={() => {
-                  navigation.navigate("PasswordReset");
-                }}
-              >
-                <Text>Oublié ?</Text>
-              </Pressable>
-            </View>
-            <TextInput
-              aria-label="Mot de passe"
+              aria-label="Nouveau Mot de passe"
               style={[
                 styles.input,
                 { borderColor: errors.password ? Colors.ERROR : "white" },
@@ -150,7 +89,7 @@ const LoginForm = ({ navigation }) => {
               onChangeText={(value) => onChange(value)}
               value={value}
               secureTextEntry={true}
-              accessibilityLabel="Entrez votre mot de passe"
+              accessibilityLabel="Entrez votre nouveau mot de passe"
             />
             {errors.password ? (
               <Text
@@ -166,46 +105,40 @@ const LoginForm = ({ navigation }) => {
         rules={{ required: true }}
       />
       <Controller
-        name="remember"
         control={control}
-        rules={{ required: false }}
-        render={({ field: { onChange, value } }) => (
-          <BouncyCheckbox
-            isChecked={authState.checkStatus}
-            fillColor="green"
-            unfillColor="white"
-            text="Se souvenir de moi"
-            style={{ marginTop: 40 }}
-            textStyle={{ color: Colors.DARKGREY, textDecorationLine: "none" }}
-            onPress={(isChecked) => {
-              onChange(isChecked);
-            }}
-            accessibilityLabel="Se souvenir de moi"
-          />
+        render={({ field: { onChange, onBlur, value } }) => (
+          <View>
+            <Text style={styles.label}>Confirmation du mot de passe *</Text>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  borderColor: errors.passwordConfirmation
+                    ? colors.ERROR
+                    : "white",
+                },
+              ]}
+              onBlur={onBlur}
+              onChangeText={(value) => onChange(value.trim())}
+              value={value}
+            />
+            {errors.passwordConfirmation ? (
+              <Text style={styles.error}>
+                {errors.passwordConfirmation.message}
+              </Text>
+            ) : null}
+          </View>
         )}
+        name="passwordConfirmation"
+        rules={{ required: true }}
       />
-      {loading ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ActivityIndicator
-            size="large"
-            color={Colors.GREEN}
-            accessibilityLabel="Chargement en cours"
-          />
-          <Text accessibilityLabel="Message: Chargement en cours">
-            chargement des données...
-          </Text>
-        </View>
-      ) : (
-        <View style={styles.button}>
-          <PurpleButton
-            title={"Se connecter"}
-            onPress={handleSubmit(onSubmit)}
-            accessibilityLabel="Bouton: Se connecter"
-          />
-        </View>
-      )}
+      <View style={styles.button}>
+        <PurpleButton
+          title={"Mise à jour du mot de passe"}
+          onPress={handleSubmit(onSubmit)}
+          accessibilityLabel="Bouton: Mise à jour du mot de passe"
+        />
+      </View>
 
       {errorMessage ? (
         <CustomAlert modalVisible={isVisible} setModalVisible={setIsVisible}>
@@ -263,4 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginForm;
+export default UpdatePasswordForm;

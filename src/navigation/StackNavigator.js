@@ -6,6 +6,7 @@ import SignupScreen from "../screens/auth/SignupScreen";
 import DiscoveriesScreen from "../screens/user/DiscoveriesScreen";
 import HomeScreen from "../screens/user/HomeScreen";
 import SpeciesDetailScreen from "../screens/user/SpeciesDetailScreen";
+import UpdatePasswordScreen from "../screens/auth/UpdatePasswordScreen";
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,7 @@ const AuthStackNavigator = () => {
       />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
+      <Stack.Screen name="UpdatePassword" component={UpdatePasswordScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
     </Stack.Navigator>
   );
