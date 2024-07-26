@@ -4,7 +4,11 @@
     "name": "pyrenexplore",
     "slug": "pyrenexplore",
     "scheme": "myapp",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,11 +18,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.pyrenexplore",
       "enableHermes": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -31,13 +38,24 @@
             "scheme": "myapp",
             "host": "updatepassword"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-secure-store", "expo-build-properties"]
+    "plugins": [
+      "expo-secure-store",
+      "expo-build-properties"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1513b15c-666f-4432-b5f9-09a44892a12e"
+      }
+    }
   }
 }
