@@ -13,7 +13,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as yup from "yup";
 
 import { useAuth } from "../../context/authContext";
-import handleServerError from "../../middelware/errorHandler";
+import handleServerError from "../../middelware/handleServerError";
 import Colors from "../../utilites/colors";
 import CustomAlert from "../CustomAlert";
 import PurpleButton from "../buttons/PurpleButton";

@@ -6,7 +6,7 @@ import { showMessage } from "react-native-flash-message";
 import CustomAlert from "../../components/CustomAlert";
 import WithBackGroundImage from "../../components/WithBackgroundImage";
 import PasswordResetForm from "../../components/forms/PasswordResetForm";
-import handleServerError from "../../middelware/errorHandler";
+import handleServerError from "../../middelware/handleServerError";
 import colors from "../../utilites/colors";
 
 const API_URL = "http://192.168.1.101:3000/v1/passwordReset";
@@ -14,7 +14,6 @@ const API_URL = "http://192.168.1.101:3000/v1/passwordReset";
 const PasswordResetScreen = ({ navigation }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (data) => {
     try {
@@ -25,7 +24,6 @@ const PasswordResetScreen = ({ navigation }) => {
           type: "success",
           backgroundColor: colors.GREEN,
         });
-        navigation.navigate("Login");
       }
     } catch (error) {
       handleServerError(error, setIsVisible, setErrorMessage);

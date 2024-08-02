@@ -6,7 +6,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as yup from "yup";
 
-import handleServerError from "../../middelware/errorHandler";
+import handleServerError from "../../middelware/handleServerError";
 import colors from "../../utilites/colors";
 import PurpleButton from "../buttons/PurpleButton";
 import CustomAlert from "../CustomAlert";

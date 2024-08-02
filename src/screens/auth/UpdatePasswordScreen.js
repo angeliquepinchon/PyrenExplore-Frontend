@@ -9,7 +9,7 @@ const UpdatePasswordScreen = () => {
 
   return (
     <View>
-      <Text>Update Password Screen</Text>
+      <Text>Update Password Screen token : {token}</Text>
     </View>
   );
 };
